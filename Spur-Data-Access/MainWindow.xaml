@@ -5,11 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Spur_Data_Access"
         mc:Ignorable="d"
-        Title="Spur Ltd." Height="720" Width="1280">
-    <Grid>
-        <ListBox x:Name="Shops" HorizontalAlignment="Left" Height="621" Margin="54,10,0,0" VerticalAlignment="Top" Width="372"/>
-        <ListBox x:Name="ShopData" HorizontalAlignment="Left" Height="621" Margin="446,10,0,0" VerticalAlignment="Top" Width="372"/>
-        <ListBox x:Name="Shops_Copy" HorizontalAlignment="Left" Height="621" Margin="844,10,0,0" VerticalAlignment="Top" Width="372"/>
+        Title="Spur Ltd." Height="1080" Width="1920">
+    <Grid Width="1920" Height="1080">
+        <ListBox x:Name="Shops" HorizontalAlignment="Left" Height="604" Margin="12,12,0,0" VerticalAlignment="Top" Width="372"/>
+        <ListBox x:Name="ShopData" HorizontalAlignment="Left" Height="604" Margin="404,12,0,0" VerticalAlignment="Top" Width="372"/>
+        <ListBox x:Name="Shops_Copy" HorizontalAlignment="Left" Height="604" Margin="802,12,0,0" VerticalAlignment="Top" Width="372"/>
+        <TextBlock x:Name="TotalCostAllOrders" HorizontalAlignment="Left" Margin="12,704,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="32" Width="372" FontSize="20" TextAlignment="Center" Text="-"/>
+        <TextBlock HorizontalAlignment="Left" Margin="12,676,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="28" Width="372" FontSize="22" Text="Total cost of all orders" TextAlignment="Center"/>
+        <TextBlock x:Name="TotalCostStore" HorizontalAlignment="Left" Margin="404,704,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="30" Width="372" FontSize="20" TextAlignment="Center" Text="-"/>
+        <TextBlock HorizontalAlignment="Left" Margin="404,676,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="28" Width="372" FontSize="22" TextAlignment="Center"><Run Text="Total cost of "/><Run Text="store"/><Run Text=" orders"/></TextBlock>
+        <Button x:Name="CalStoreOrdersButton" Content="Calculate all store orders" HorizontalAlignment="Left" Margin="404,621,0,0" VerticalAlignment="Top" Width="372" Height="55" FontSize="20" Click="CalStoreOrdersButton_Click"/>
+        <Button x:Name="CalOrderCostsAllStoresButton" Content="Calculate order cost for all stores" HorizontalAlignment="Left" Margin="12,621,0,0" VerticalAlignment="Top" Width="372" Height="55" FontSize="20" Click="CalOrderCostsAllStoresButton_Click"/>
+        <Button Content="Refresh" HorizontalAlignment="Left" Margin="12,754,0,0" VerticalAlignment="Top" Width="764" Height="72" FontSize="30" Click="RefreshButton_Click"/>
+        <ComboBox HorizontalAlignment="Left" Margin="1204,77,0,0" VerticalAlignment="Top" Width="691" Height="68"/>
+        <TextBlock HorizontalAlignment="Left" Margin="1204,12,0,0" TextWrapping="Wrap" Text="Suppliers" VerticalAlignment="Top" Height="60" Width="691" FontSize="40" TextAlignment="Center"/>
 
     </Grid>
 </Window>
