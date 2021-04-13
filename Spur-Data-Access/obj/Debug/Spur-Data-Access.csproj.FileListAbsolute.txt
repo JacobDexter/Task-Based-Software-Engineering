@@ -13,3 +13,18 @@ C:\Users\Jacob\OneDrive - Staffordshire University\Year 2\Task-Based\Spur-Data-A
 C:\Users\Jacob\OneDrive - Staffordshire University\Year 2\Task-Based\Spur-Data-Access\Spur-Data-Access\obj\Debug\Spur-Data-Access.csproj.CoreCompileInputs.cache
 C:\Users\Jacob\OneDrive - Staffordshire University\Year 2\Task-Based\Spur-Data-Access\Spur-Data-Access\obj\Debug\Spur-Data-Access.exe
 C:\Users\Jacob\OneDrive - Staffordshire University\Year 2\Task-Based\Spur-Data-Access\Spur-Data-Access\obj\Debug\Spur-Data-Access.pdb
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\bin\Debug\Spur-Data-Access.exe.config
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\bin\Debug\Spur-Data-Access.exe
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\bin\Debug\Spur-Data-Access.pdb
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\Spur-Data-Access.csprojAssemblyReference.cache
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\MainWindow.g.cs
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\App.g.cs
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\Spur-Data-Access_MarkupCompile.cache
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\Spur-Data-Access_MarkupCompile.lref
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\MainWindow.baml
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\Spur-Data-Access.g.resources
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\Spur_Data_Access.Properties.Resources.resources
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\Spur-Data-Access.csproj.GenerateResource.cache
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\Spur-Data-Access.csproj.CoreCompileInputs.cache
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\Spur-Data-Access.exe
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\Spur-Data-Access.pdb
