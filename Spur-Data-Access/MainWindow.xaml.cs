@@ -79,6 +79,8 @@ namespace Spur_Data_Access
                             Content = System.IO.Path.GetFileName(file)
                         };
 
+                        item.Selected += new RoutedEventHandler(LoadOrdersFromFile);
+
                         ShopData.Items.Add(item);
                     }
 
@@ -86,6 +88,31 @@ namespace Spur_Data_Access
                     //TotalCostStore.Text = String.Format("{0:$#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreTotalOrderCost(temp.Content.ToString().Substring(0, 4)));
                 }
              ));
+        }
+
+        //get all orders from file
+        void LoadOrdersFromFile(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    ListBoxItem temp = (ListBoxItem)sender;
+                    List<CSVLoader.Order> orders = CSVLoader.GetFileOrders(temp.Content.ToString());
+
+                    foreach (CSVLoader.Order order in orders)
+                    {
+                        ListBoxItem item = new ListBoxItem
+                        {
+                            Content = "Week " + order.Date.Week + " - " + order.Date.Year + " - " + order.SupplierName + " - " + order.SupplierType + " - " + order.Cost
+                        };
+
+                        Orders.Items.Add(item);
+                    }
+
+                    orders.Clear();
+                }
+                ));
         }
 
         private void CalStoreOrdersButton_Click(object sender, RoutedEventArgs e)
@@ -97,7 +124,7 @@ namespace Spur_Data_Access
                 ListBoxItem store = (ListBoxItem)Shops.SelectedItem;
 
                 //calculate total of all orders for store and display
-                TotalCostStore.Text = String.Format("{0:$#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreTotalOrderCost(store.Content.ToString().Substring(0, 4)));
+                TotalCostStore.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreTotalOrderCost(store.Content.ToString().Substring(0, 4)));
             }
         }
 
@@ -115,8 +142,23 @@ namespace Spur_Data_Access
             if (TotalCostAllOrders.Text.Length <= 1)
             {
                 //calculate total of all orders and display
-                TotalCostAllOrders.Text = String.Format("{0:$#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetTotalOrderCost());
+                TotalCostAllOrders.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetTotalOrderCost());
             }
+        }
+
+        private void CalWeeklyStoreOrderCost_Click(object sender, RoutedEventArgs e)
+        {
+            if(ShopData.SelectedItem != null)
+            {
+                ListBoxItem filename = (ListBoxItem)ShopData.SelectedItem;
+                WeekOrderCost.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreWeeklyOrderCost(filename.Content.ToString())).ToString();
+            }
+        }
+
+        private void ShopData_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Orders.Items.Clear();
+            WeekOrderCost.Text = " - ";
         }
     }
 }

@@ -136,6 +136,11 @@ class CSVLoader
         return stores;
     }
 
+    public static List<Order> GetFileOrders(string filename)
+    {
+        return GetStoreOrderData( new List<string>{ filename } );
+    }
+
     //The total cost of all orders available in the supplied data
     public static float GetTotalOrderCost()
     {
@@ -177,9 +182,19 @@ class CSVLoader
     }
 
     //The total cost of orders in a week for a single store
-    public static float GetStoreWeeklyOrderCost(string storeCode)
+    public static float GetStoreWeeklyOrderCost(string filename)
     {
-        return 0.0f;
+        float totalCost = 0.0f;
+        List<Order> orders = GetFileOrders(filename);
+
+        foreach(Order order in orders)
+        {
+            totalCost += order.Cost;
+        }
+
+        orders.Clear();
+
+        return totalCost;
     }
 
     //The total cost of all orders to a supplier
