@@ -197,9 +197,66 @@ class CSVLoader
         return totalCost;
     }
 
+    //
+    // Supplier
+    //
+
     //The total cost of all orders to a supplier
     public static float GetSupplierOrderCost(string supplier)
     {
-        return 0.0f;
+        List<Order> orders = GetStoreOrderData(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList());
+        List<float> prices = new List<float>();
+        float totalCost = 0.0f;
+
+        foreach (Order order in orders)
+        {
+            if (order.SupplierName == supplier)
+                prices.Add(order.Cost);
+        }
+
+        orders.Clear();
+
+        foreach (float price in prices)
+        {
+            totalCost += price;
+        }
+
+        prices.Clear();
+
+        return totalCost;
+    }
+
+    //Get all supplier names
+    public static List<string> GetSupplierNames()
+    {
+        List<Order> orders = GetStoreOrderData(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList());
+        List<string> names = new List<string>();
+
+        foreach(Order order in orders)
+        {
+            if (!names.Contains(order.SupplierName))
+                names.Add(order.SupplierName);
+        }
+
+        orders.Clear();
+
+        return names;
+    }
+
+    //Get all supplier types
+    public static List<string> GetSupplierTypes()
+    {
+        List<Order> orders = GetStoreOrderData(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList());
+        List<string> types = new List<string>();
+
+        foreach (Order order in orders)
+        {
+            if (!types.Contains(order.SupplierType))
+                types.Add(order.SupplierType);
+        }
+
+        orders.Clear();
+
+        return types;
     }
 }

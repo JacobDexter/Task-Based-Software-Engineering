@@ -32,6 +32,29 @@ namespace Spur_Data_Access
         {
             InitializeComponent();
             LoadStoreNames();
+            SetupWeeks();
+            Window supp = new SupplierWindow();
+            supp.Show();
+        }
+
+        //set weeks dropdown
+        private void SetupWeeks()
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                   (
+                   () =>
+                   {
+                       for (int i = 1; i <= 52; i++)
+                       {
+                           ComboBoxItem item = new ComboBoxItem
+                           {
+                               Content = i
+                           };
+
+                           WeekCombo.Items.Add(item);
+                       }
+                   }
+                   ));
         }
 
         //get all store names

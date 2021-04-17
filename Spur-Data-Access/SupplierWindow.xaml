@@ -9,23 +9,23 @@
     <Grid>
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="129" Margin="10,68,0,0" VerticalAlignment="Top" Width="258"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Supplier Menu" FontSize="40" TextDecorations="Underline" Height="63"/>
-        <ComboBox HorizontalAlignment="Left" Margin="19,106,0,0" VerticalAlignment="Top" Width="240" Height="31"/>
+        <ComboBox x:Name="SupplierSelector" HorizontalAlignment="Left" Margin="19,106,0,0" VerticalAlignment="Top" Width="240" Height="31" SelectionChanged="SupplierSelector_SelectionChanged"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,144,0,0" TextWrapping="Wrap" Text="Total cost of orders to supplier" VerticalAlignment="Top" FontSize="18" Width="258" TextAlignment="Center"/>
         <TextBlock x:Name="CostOfOrdersToSupplierText" HorizontalAlignment="Left" Margin="10,173,0,0" TextWrapping="Wrap" Text=" - " VerticalAlignment="Top" FontSize="18" Width="258" TextAlignment="Center"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,77,0,0" TextWrapping="Wrap" Text="Supplier Selector" VerticalAlignment="Top" FontSize="18" Width="258" TextAlignment="Center"/>
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="129" Margin="10,207,0,0" VerticalAlignment="Top" Width="258"/>
-        <ComboBox HorizontalAlignment="Left" Margin="19,245,0,0" VerticalAlignment="Top" Width="240" Height="31"/>
+        <ComboBox x:Name="SupplierTypeSelector" HorizontalAlignment="Left" Margin="19,245,0,0" VerticalAlignment="Top" Width="240" Height="31"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,283,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="18" Width="258" TextAlignment="Center"><Run Text="C"/><Run Text="o"/><Run Text="st"/><Run Text=" "/><Run Text="of "/><Run Text="orders to supplier"/><Run Text=" type"/></TextBlock>
         <TextBlock x:Name="CostOfOrdersToSuppType" HorizontalAlignment="Left" Margin="10,312,0,0" TextWrapping="Wrap" Text=" - " VerticalAlignment="Top" FontSize="18" Width="258" TextAlignment="Center"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,216,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="18" Width="258" TextAlignment="Center"><Run Text="Supplier "/><Run Text="Type "/><Run Text="Selector"/></TextBlock>
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="268" Margin="273,68,0,0" VerticalAlignment="Top" Width="258"/>
-        <ComboBox HorizontalAlignment="Left" Margin="282,106,0,0" VerticalAlignment="Top" Width="239" Height="31"/>
+        <ComboBox x:Name="SupplierTypeWeekYearSelector" HorizontalAlignment="Left" Margin="282,106,0,0" VerticalAlignment="Top" Width="239" Height="31"/>
         <TextBlock HorizontalAlignment="Left" Margin="273,283,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="18" Width="257" TextAlignment="Center"><Run Text="C"/><Run Text="ost of orders "/><Run Text="to type in week"/></TextBlock>
         <TextBlock x:Name="CostOrdersTypePerWeek" HorizontalAlignment="Left" Margin="273,312,0,0" TextWrapping="Wrap" Text=" - " VerticalAlignment="Top" FontSize="18" Width="258" TextAlignment="Center"/>
         <TextBlock HorizontalAlignment="Left" Margin="273,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="18" Width="258" TextAlignment="Center"><Run Text="Supplier "/><Run Text="Type"/></TextBlock>
-        <ComboBox HorizontalAlignment="Left" Margin="282,173,0,0" VerticalAlignment="Top" Width="239" Height="31"/>
+        <ComboBox x:Name="WeekCombo" HorizontalAlignment="Left" Margin="282,173,0,0" VerticalAlignment="Top" Width="239" Height="31"/>
         <TextBlock HorizontalAlignment="Left" Margin="273,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="18" Width="258" TextAlignment="Center" Text="Week"/>
-        <ComboBox HorizontalAlignment="Left" Margin="282,240,0,0" VerticalAlignment="Top" Width="239" Height="31">
+        <ComboBox x:Name="YearCombo" HorizontalAlignment="Left" Margin="282,240,0,0" VerticalAlignment="Top" Width="239" Height="31">
             <ComboBoxItem Content="2013" HorizontalAlignment="Left" Width="237"/>
             <ComboBoxItem Content="2014" HorizontalAlignment="Left" Width="237"/>
         </ComboBox>

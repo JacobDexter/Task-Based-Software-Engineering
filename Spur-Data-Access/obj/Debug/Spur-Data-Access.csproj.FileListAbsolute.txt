@@ -45,3 +45,5 @@ F:\GitHub\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\Spur-Data-A
 F:\GitHub\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\Spur-Data-Access.pdb
 F:\GitHub\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\SupplierWindow.g.cs
 F:\GitHub\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\SupplierWindow.baml
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\SupplierWindow.g.cs
+D:\Github\Task-Based-Software-Engineering\Spur-Data-Access\obj\Debug\SupplierWindow.baml
