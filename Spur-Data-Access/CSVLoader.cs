@@ -223,6 +223,34 @@ class CSVLoader
         return totalCost;
     }
 
+    public static float GetStoreWeekTotalOrderCost(string code, string week, string year)
+    {
+        List<string> fileNames = CSVLoader.FindAllFilePathsWithCode(code);
+        List<string> finalPaths = new List<string>();
+        string comparison = "_" + week + "_" + year;
+        float totalCost = 0.0f;
+
+        foreach(string path in fileNames)
+        {
+            if(path.Contains(comparison))
+            {
+                finalPaths.Add(path);
+            }
+        }
+
+        fileNames.Clear();
+
+        List<Order> orders = GetStoreOrderData(finalPaths);
+        finalPaths.Clear();
+
+        foreach(Order order in orders)
+        {
+            totalCost += order.Cost;
+        }
+
+        return totalCost;
+    }
+
     //
     // Supplier
     //

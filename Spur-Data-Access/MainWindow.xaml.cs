@@ -142,6 +142,21 @@ namespace Spur_Data_Access
                 ));
         }
 
+        private void CalculateStoreWeeklyOrderTotal()
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    if (SuppTypeWeekStoreDrop.SelectedIndex != -1 && SuppTypeYearStoreDrop.SelectedIndex != -1 && Shops.SelectedIndex != -1)
+                    {
+                        ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
+                        TotalOrderSuppTypeStoreWeeklyText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreWeekTotalOrderCost(item.Content.ToString().Substring(0, 4), SuppTypeWeekStoreDrop.Text, SuppTypeYearStoreDrop.Text));
+                    }
+                }
+                ));
+        }
+
         private void CalStoreOrdersButton_Click(object sender, RoutedEventArgs e)
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
@@ -250,6 +265,28 @@ namespace Spur_Data_Access
                         ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
                         AllStoreWeeklyText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetWeeklyOrderCost(WeekCombo.Text, YearCombo.Text));
                     }
+                }
+                ));
+        }
+
+        private void SuppTypeWeekStoreDrop_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    CalculateStoreWeeklyOrderTotal();
+                }
+                ));
+        }
+
+        private void SuppTypeYearStoreDrop_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    CalculateStoreWeeklyOrderTotal();
                 }
                 ));
         }
