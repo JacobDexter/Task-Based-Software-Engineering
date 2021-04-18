@@ -33,8 +33,6 @@ namespace Spur_Data_Access
             InitializeComponent();
             LoadStoreNames();
             SetupWeeks();
-            Window supp = new SupplierWindow();
-            supp.Show();
         }
 
         //set weeks dropdown
@@ -51,7 +49,13 @@ namespace Spur_Data_Access
                                Content = i
                            };
 
+                           ComboBoxItem item2 = new ComboBoxItem
+                           {
+                               Content = i
+                           };
+
                            WeekCombo.Items.Add(item);
+                           SuppTypeWeekStoreDrop.Items.Add(item2);
                        }
                    }
                    ));
@@ -140,48 +144,114 @@ namespace Spur_Data_Access
 
         private void CalStoreOrdersButton_Click(object sender, RoutedEventArgs e)
         {
-            //check if a store is selected
-            if(Shops.SelectedItem != null && TotalCostStore.Text.Length <= 1)
-            {
-                //get current active store
-                ListBoxItem store = (ListBoxItem)Shops.SelectedItem;
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    //check if a store is selected
+                    if (Shops.SelectedItem != null && TotalCostStore.Text.Length <= 1)
+                    {
+                        //get current active store
+                        ListBoxItem store = (ListBoxItem)Shops.SelectedItem;
 
-                //calculate total of all orders for store and display
-                TotalCostStore.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreTotalOrderCost(store.Content.ToString().Substring(0, 4)));
-            }
+                        //calculate total of all orders for store and display
+                        TotalCostStore.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreTotalOrderCost(store.Content.ToString().Substring(0, 4)));
+                    }
+                }
+                ));
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            Shops.Items.Clear();
-            ShopData.Items.Clear();
-            TotalCostStore.Text = "-";
-            TotalCostAllOrders.Text = "-";
-            LoadStoreNames();
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    Shops.Items.Clear();
+                    ShopData.Items.Clear();
+                    TotalCostStore.Text = "-";
+                    TotalCostAllOrders.Text = "-";
+                    LoadStoreNames();
+                }
+                ));
         }
 
         private void CalOrderCostsAllStoresButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TotalCostAllOrders.Text.Length <= 1)
-            {
-                //calculate total of all orders and display
-                TotalCostAllOrders.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetTotalOrderCost());
-            }
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    if (TotalCostAllOrders.Text.Length <= 1)
+                    {
+                        //calculate total of all orders and display
+                        TotalCostAllOrders.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetTotalOrderCost());
+                    }
+                }
+                ));
         }
 
         private void CalWeeklyStoreOrderCost_Click(object sender, RoutedEventArgs e)
         {
-            if(ShopData.SelectedItem != null)
-            {
-                ListBoxItem filename = (ListBoxItem)ShopData.SelectedItem;
-                WeekOrderCost.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreWeeklyOrderCost(filename.Content.ToString())).ToString();
-            }
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    if (ShopData.SelectedItem != null)
+                    {
+                        ListBoxItem filename = (ListBoxItem)ShopData.SelectedItem;
+                        WeekOrderCost.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreWeeklyOrderCost(filename.Content.ToString())).ToString();
+                    }
+                }
+                ));
         }
 
         private void ShopData_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Orders.Items.Clear();
             WeekOrderCost.Text = " - ";
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    Window supp = new SupplierWindow();
+                    supp.Show();
+                }
+                ));
+        }
+
+        private void YearCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    if(YearCombo.SelectedIndex != -1 && WeekCombo.SelectedIndex != -1)
+                    {
+                        ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
+                        AllStoreWeeklyText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetWeeklyOrderCost(WeekCombo.Text, YearCombo.Text));
+                    }
+                }
+                ));
+        }
+
+        private void WeekCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    if (YearCombo.SelectedIndex != -1 && WeekCombo.SelectedIndex != -1)
+                    {
+                        ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
+                        AllStoreWeeklyText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetWeeklyOrderCost(WeekCombo.Text, YearCombo.Text));
+                    }
+                }
+                ));
         }
     }
 }

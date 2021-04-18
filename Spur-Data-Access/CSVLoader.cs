@@ -176,9 +176,35 @@ class CSVLoader
     }
 
     //The total cost of orders in a week for all stores
-    public static float GetWeeklyOrderCost()
+    public static float GetWeeklyOrderCost(string week, string year)
     {
-        return 0.0f;
+        List<string> allPaths = Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList();
+        List<string> paths = new List<string>();
+        string comparison = "_" + week + "_" + year;
+
+        foreach (string path in allPaths)
+        {
+            if (path.Contains(comparison))
+            {
+                paths.Add(path);
+            }
+        }
+
+        allPaths.Clear();
+
+        float totalCost = 0.0f;
+        List<Order> orders = GetStoreOrderData(paths);
+
+        paths.Clear();
+
+        foreach (Order order in orders)
+        {
+            totalCost += order.Cost;
+        }
+
+        orders.Clear();
+
+        return totalCost;
     }
 
     //The total cost of orders in a week for a single store
@@ -258,5 +284,59 @@ class CSVLoader
         orders.Clear();
 
         return types;
+    }
+
+    public static float GetSupplierTypeWeeklyCost(string type, string week, string year)
+    {
+        List<string> allPaths = Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList();
+        List<string> paths = new List<string>();
+        string comparison = "_" + week + "_" + year;
+
+        foreach (string path in allPaths)
+        {
+            if(path.Contains(comparison))
+            {
+                paths.Add(path);
+            }
+        }
+
+        allPaths.Clear();
+
+        float totalCost = 0.0f;
+        List<Order> orders = GetStoreOrderData(paths);
+
+        paths.Clear();
+
+        foreach(Order order in orders)
+        {
+            if (order.SupplierType == type)
+                totalCost += order.Cost;
+        }
+
+        orders.Clear();
+
+        return totalCost;
+    }
+
+    public static float GetSupplierTypeTotalCost(string type)
+    {
+        float totalCost = 0.0f;
+
+        List<string> paths = Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList();
+        List<Order> orders = GetStoreOrderData(paths);
+
+        paths.Clear();
+
+        foreach(Order order in orders)
+        {
+            if(order.SupplierType == type)
+            {
+                totalCost += order.Cost;
+            }
+        }
+
+        orders.Clear();
+
+        return totalCost;
     }
 }

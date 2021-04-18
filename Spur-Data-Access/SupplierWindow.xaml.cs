@@ -95,6 +95,36 @@ namespace Spur_Data_Access
                 ));
         }
 
+        private void CalculateSuppTypeWeekly()
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    if (SupplierTypeWeekYearSelector.SelectedIndex != -1 && WeekCombo.SelectedIndex != -1 && YearCombo.SelectedIndex != -1)
+                    {
+                        ComboBoxItem item = (ComboBoxItem)SupplierTypeWeekYearSelector.SelectedItem;
+                        CostOrdersTypePerWeek.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetSupplierTypeWeeklyCost(item.Content.ToString(), WeekCombo.Text, YearCombo.Text));
+                    }
+                }
+                ));
+        }
+
+        private void CalculateSuppTypeTotalCost()
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    if (SupplierTypeSelector.SelectedIndex != -1)
+                    {
+                        ComboBoxItem item = (ComboBoxItem)SupplierTypeSelector.SelectedItem;
+                        CostOfOrdersToSuppType.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetSupplierTypeTotalCost(item.Content.ToString()));
+                    }
+                }
+                ));
+        }
+
         private void SupplierSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
@@ -105,6 +135,44 @@ namespace Spur_Data_Access
                     CostOfOrdersToSupplierText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetSupplierOrderCost(item.Content.ToString()));
                 }
                 ));
+        }
+
+        private void SupplierTypeWeekYearSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    CalculateSuppTypeWeekly();
+                }
+                ));
+        }
+
+        private void WeekCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    CalculateSuppTypeWeekly();
+                }
+                ));
+        }
+
+        private void YearCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    CalculateSuppTypeWeekly();
+                }
+                ));
+        }
+
+        private void SupplierTypeSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CalculateSuppTypeTotalCost();
         }
     }
 }
