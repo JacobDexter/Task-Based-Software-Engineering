@@ -91,6 +91,8 @@ namespace Spur_Data_Access
                         SupplierTypeSelector.Items.Add(item);
                         SupplierTypeWeekYearSelector.Items.Add(item2);
                     }
+
+                    types.Clear();
                 }
                 ));
         }
@@ -172,7 +174,13 @@ namespace Spur_Data_Access
 
         private void SupplierTypeSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CalculateSuppTypeTotalCost();
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    CalculateSuppTypeTotalCost();
+                }
+                ));
         }
     }
 }

@@ -33,6 +33,7 @@ namespace Spur_Data_Access
             InitializeComponent();
             LoadStoreNames();
             SetupWeeks();
+            GetSupplierTypes();
         }
 
         //set weeks dropdown
@@ -80,7 +81,32 @@ namespace Spur_Data_Access
 
                             Shops.Items.Add(item);
                         }
+
                     }
+                ));
+        }
+
+        //get all supplier types
+        private void GetSupplierTypes()
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    List<string> types = CSVLoader.GetSupplierTypes();
+
+                    foreach (string type in types)
+                    {
+                        ComboBoxItem item = new ComboBoxItem
+                        {
+                            Content = type
+                        };
+
+                        StoreSupplierTypeTotalDropDown.Items.Add(item);
+                    }
+
+                    types.Clear();
+                }
                 ));
         }
 
@@ -186,6 +212,14 @@ namespace Spur_Data_Access
                     ShopData.Items.Clear();
                     TotalCostStore.Text = "-";
                     TotalCostAllOrders.Text = "-";
+                    StoreSupplierTypeTotalDropDown.SelectedIndex = -1;
+                    WeekCombo.SelectedIndex = -1;
+                    YearCombo.SelectedIndex = -1;
+                    StoreSupplierTypeTotalText.Text = " - ";
+                    AllStoreWeeklyText.Text = " - ";
+                    SuppTypeWeekStoreDrop.SelectedIndex = -1;
+                    SuppTypeYearStoreDrop.SelectedIndex = -1;
+                    TotalOrderSuppTypeStoreWeeklyText.Text = " - ";
                     LoadStoreNames();
                 }
                 ));
@@ -287,6 +321,33 @@ namespace Spur_Data_Access
                 () =>
                 {
                     CalculateStoreWeeklyOrderTotal();
+                }
+                ));
+        }
+
+        private void StoreSupplierTypeTotalDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    if (Shops.SelectedIndex != -1 && StoreSupplierTypeTotalDropDown.SelectedIndex != -1)
+                    {
+                        ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
+                        StoreSupplierTypeTotalText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetTotalCostOfSupplierToStore(item.Content.ToString().Substring(0, 4), StoreSupplierTypeTotalDropDown.Text));
+                    }
+                }
+                ));
+        }
+
+        private void Shops_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
+                (
+                () =>
+                {
+                    StoreSupplierTypeTotalDropDown.SelectedIndex = -1;
+                    StoreSupplierTypeTotalText.Text = " - ";
                 }
                 ));
         }

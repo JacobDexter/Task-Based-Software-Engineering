@@ -251,6 +251,25 @@ class CSVLoader
         return totalCost;
     }
 
+    public static float GetTotalCostOfSupplierToStore(string code, string type)
+    {
+        float totalCost = 0.0f;
+        List<string> paths = FindAllFilePathsWithCode(code);
+        List<Order> orders = GetStoreOrderData(paths);
+
+        paths.Clear();
+
+        foreach(Order order in orders)
+        {
+            if(order.SupplierType == type)
+                totalCost += order.Cost;
+        }
+
+        orders.Clear();
+
+        return totalCost;
+    }
+
     //
     // Supplier
     //
