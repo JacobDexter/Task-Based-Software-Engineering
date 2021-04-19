@@ -348,6 +348,9 @@ namespace Spur_Data_Access
                 {
                     StoreSupplierTypeTotalDropDown.SelectedIndex = -1;
                     StoreSupplierTypeTotalText.Text = " - ";
+                    SuppTypeWeekStoreDrop.SelectedIndex = -1;
+                    SuppTypeYearStoreDrop.SelectedIndex = -1;
+                    TotalOrderSuppTypeStoreWeeklyText.Text = " - ";
                 }
                 ));
         }

@@ -79,7 +79,7 @@ class CSVLoader
         }
 
         stopWatch.Stop();
-        Console.WriteLine("Time To Load: " + stopWatch.Elapsed.TotalSeconds);
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get orders from list of file paths)");
 
         filePaths.Clear();
         return orders;
@@ -105,7 +105,7 @@ class CSVLoader
         temp.Clear(); //clear data
 
         stopWatch.Stop();
-        Console.WriteLine("Time To Load: " + stopWatch.Elapsed.TotalSeconds);
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get file paths for specific store code)");
 
         return fileNames;
     }
@@ -131,7 +131,7 @@ class CSVLoader
         }
 
         stopWatch.Stop();
-        Console.WriteLine("Load store names and location time: " + stopWatch.Elapsed.TotalSeconds);
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get all stores from stores csv)");
 
         return stores;
     }
@@ -144,6 +144,9 @@ class CSVLoader
     //The total cost of all orders available in the supplied data
     public static float GetTotalOrderCost()
     {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
         List<Order> orders = GetStoreOrderData(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList<string>());
 
         float totalCost = 0.0f;
@@ -155,12 +158,18 @@ class CSVLoader
 
         orders.Clear();
 
+        stopWatch.Stop();
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Calculate cost of all orders in data)");
+
         return totalCost;
     }
 
     //The total cost of all orders for a single store
     public static float GetStoreTotalOrderCost(string storeCode)
     {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
         List<Order> orders = GetStoreOrderData(FindAllFilePathsWithCode(storeCode));
 
         float totalCost = 0.0f;
@@ -172,12 +181,18 @@ class CSVLoader
 
         orders.Clear();
 
+        stopWatch.Stop();
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Calculate cost of all orders to a single store)");
+
         return totalCost;
     }
 
     //The total cost of orders in a week for all stores
     public static float GetWeeklyOrderCost(string week, string year)
     {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
         List<string> allPaths = Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList();
         List<string> paths = new List<string>();
         string comparison = "_" + week + "_" + year;
@@ -204,12 +219,18 @@ class CSVLoader
 
         orders.Clear();
 
+        stopWatch.Stop();
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Calculate cost of all orders to a single store)");
+
         return totalCost;
     }
 
     //The total cost of orders in a week for a single store
     public static float GetStoreWeeklyOrderCost(string filename)
     {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
         float totalCost = 0.0f;
         List<Order> orders = GetFileOrders(filename);
 
@@ -220,11 +241,17 @@ class CSVLoader
 
         orders.Clear();
 
+        stopWatch.Stop();
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Calculate cost of orders to a single store in a week)");
+
         return totalCost;
     }
 
     public static float GetStoreWeekTotalOrderCost(string code, string week, string year)
     {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
         List<string> fileNames = CSVLoader.FindAllFilePathsWithCode(code);
         List<string> finalPaths = new List<string>();
         string comparison = "_" + week + "_" + year;
@@ -248,11 +275,17 @@ class CSVLoader
             totalCost += order.Cost;
         }
 
+        stopWatch.Stop();
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Calculate cost of orders to a single store in a specified week)");
+
         return totalCost;
     }
 
     public static float GetTotalCostOfSupplierToStore(string code, string type)
     {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
         float totalCost = 0.0f;
         List<string> paths = FindAllFilePathsWithCode(code);
         List<Order> orders = GetStoreOrderData(paths);
@@ -267,6 +300,9 @@ class CSVLoader
 
         orders.Clear();
 
+        stopWatch.Stop();
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get cost of orders from specific supplier to a store)");
+
         return totalCost;
     }
 
@@ -277,6 +313,9 @@ class CSVLoader
     //The total cost of all orders to a supplier
     public static float GetSupplierOrderCost(string supplier)
     {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
         List<Order> orders = GetStoreOrderData(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList());
         List<float> prices = new List<float>();
         float totalCost = 0.0f;
@@ -296,12 +335,18 @@ class CSVLoader
 
         prices.Clear();
 
+        stopWatch.Stop();
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get the total cost of all orders to a supplier)");
+
         return totalCost;
     }
 
     //Get all supplier names
     public static List<string> GetSupplierNames()
     {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
         List<Order> orders = GetStoreOrderData(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList());
         List<string> names = new List<string>();
 
@@ -313,12 +358,18 @@ class CSVLoader
 
         orders.Clear();
 
+        stopWatch.Stop();
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get all supplier names)");
+
         return names;
     }
 
     //Get all supplier types
     public static List<string> GetSupplierTypes()
     {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
         List<Order> orders = GetStoreOrderData(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList());
         List<string> types = new List<string>();
 
@@ -330,11 +381,17 @@ class CSVLoader
 
         orders.Clear();
 
+        stopWatch.Stop();
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get all supplier types)");
+
         return types;
     }
 
     public static float GetSupplierTypeWeeklyCost(string type, string week, string year)
     {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
         List<string> allPaths = Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList();
         List<string> paths = new List<string>();
         string comparison = "_" + week + "_" + year;
@@ -362,11 +419,17 @@ class CSVLoader
 
         orders.Clear();
 
+        stopWatch.Stop();
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get cost of orders to a supplier type in a specified week)");
+
         return totalCost;
     }
 
     public static float GetSupplierTypeTotalCost(string type)
     {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
         float totalCost = 0.0f;
 
         List<string> paths = Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList();
@@ -383,6 +446,9 @@ class CSVLoader
         }
 
         orders.Clear();
+
+        stopWatch.Stop();
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get cost of all orders to supplier type)");
 
         return totalCost;
     }
