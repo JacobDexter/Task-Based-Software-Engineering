@@ -32,7 +32,7 @@
         <Button Content="Open Supplier Window" HorizontalAlignment="Left" Margin="1179,865,0,0" VerticalAlignment="Top" Width="731" Height="56" FontSize="20" Click="Button_Click"/>
         <ComboBox x:Name="StoreSupplierTypeTotalDropDown" HorizontalAlignment="Left" Margin="580,792,0,0" VerticalAlignment="Top" Width="412" Height="55" SelectionChanged="StoreSupplierTypeTotalDropDown_SelectionChanged" FontSize="30"/>
         <TextBlock HorizontalAlignment="Left" Margin="580,739,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22"><Run Text="Cost of orders from store"/><Run Text=" to supplier type"/><Run Text="*"/></TextBlock>
-        <TextBlock x:Name="StoreSupplierTypeTotalText" HorizontalAlignment="Left" Margin="589,865,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20" Text=" - " TextAlignment="Center" Width="403" Height="39"/>
+        <TextBlock x:Name="StoreSupplierTypeTotalText" HorizontalAlignment="Left" Margin="580,852,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Text=" - " TextAlignment="Center" Width="412" Height="52"/>
         <TextBlock HorizontalAlignment="Left" Margin="1179,482,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="30" Width="731" TextAlignment="Center"><Run Text="Cost of orders from store"/><Run Text=" to supplier type"/><Run Text=" in a week"/><Run Text="*"/></TextBlock>
         <TextBlock HorizontalAlignment="Left" Margin="1179,539,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="731" TextAlignment="Center" Text="Week" Height="53"/>
         <ComboBox x:Name="SuppTypeWeekStoreDrop" HorizontalAlignment="Left" Margin="1185,597,0,0" VerticalAlignment="Top" Width="725" Height="60" SelectionChanged="SuppTypeWeekStoreDrop_SelectionChanged" FontSize="40"/>

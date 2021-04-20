@@ -70,6 +70,7 @@ namespace Spur_Data_Access
                 () =>
                     {
                         stores = CSVLoader.GetStoreData();
+
                         foreach (string index in stores.Keys)
                         {
                             ListBoxItem item = new ListBoxItem

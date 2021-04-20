@@ -13,8 +13,11 @@ class CSVLoader
     static string storeCodesFile = "StoreCodes.csv";
     static string storeDataFolder = "StoreData";
 
-    static Dictionary<string, Store> stores = new Dictionary<string, Store>();
-    static List<Task> tasks = new List<Task>();
+    static ConcurrentDictionary<string, Store> stores = new ConcurrentDictionary<string, Store>();
+
+    //TPL
+    //static List<Task> tasks = new List<Task>();
+    //static TaskFactory factory = new TaskFactory();
 
     public class Store
     {
@@ -40,13 +43,13 @@ class CSVLoader
 
     public static List<Order> GetStoreOrderData(List<string> filePaths)
     {
-        HashSet<Date> dates = new HashSet<Date>();
-        List<Order> orders = new List<Order>();
+        ConcurrentQueue<Date> dates = new ConcurrentQueue<Date>();
+        ConcurrentQueue<Order> orders = new ConcurrentQueue<Order>();
 
         Stopwatch stopWatch = new Stopwatch();
         stopWatch.Start();
 
-        foreach (string filePath in filePaths)
+        Parallel.ForEach(filePaths, filePath => 
         {
             string fileNameExt = Path.GetFileName(filePath.ToString());
             string fileName = Path.GetFileNameWithoutExtension(filePath.ToString());
@@ -54,13 +57,14 @@ class CSVLoader
             string[] fileNameSplit = fileName.Split('_');
             Store store = stores[fileNameSplit[0]];
             Date date = new Date { Week = Convert.ToInt32(fileNameSplit[1]), Year = Convert.ToInt32(fileNameSplit[2]) };
-            dates.Add(date);
+            dates.Enqueue(date);
             //fileNameSplit[0] = store code
             //fileNameSplit[1] = week number
             //fileNameSplit[2] = year
 
             string[] orderData = File.ReadAllLines(folderPath + @"\" + storeDataFolder + @"\" + fileNameExt);
-            foreach (var orderInfo in orderData)
+
+            Parallel.ForEach(orderData, orderInfo =>
             {
                 string[] orderSplit = orderInfo.Split(',');
                 Order order = new Order
@@ -71,18 +75,19 @@ class CSVLoader
                     SupplierType = orderSplit[1],
                     Cost = float.Parse(orderSplit[2])
                 };
-                orders.Add(order);
+                orders.Enqueue(order);
                 //orderSplit[0] = supplier name
                 //orderSplit[1] = supplier type
                 //orderSplit[2] = cost
-            }
-        }
+            });
+        });
 
         stopWatch.Stop();
         Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get orders from list of file paths)");
 
         filePaths.Clear();
-        return orders;
+
+        return orders.ToList();
     }
 
     public static List<string> FindAllFilePathsWithCode(string storeCode)
@@ -94,15 +99,13 @@ class CSVLoader
         List<string> temp = Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList<string>();
         List<string> fileNames = new List<string>();
 
-        foreach (string name in temp)
+        foreach(string path in temp)
         {
-            if (name.ToString().Contains(storeCode))
+            if (path.ToString().Contains(storeCode))
             {
-                fileNames.Add(Path.GetFullPath(name.ToString()));
+                fileNames.Add(Path.GetFullPath(path.ToString()));
             }
         }
-
-        temp.Clear(); //clear data
 
         stopWatch.Stop();
         Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get file paths for specific store code)");
@@ -120,20 +123,20 @@ class CSVLoader
         string storeCodesFilePath = Directory.GetCurrentDirectory() + @"\" + folderPath + @"\" + storeCodesFile;
         string[] storeCodesData = File.ReadAllLines(storeCodesFilePath);
 
-        foreach (var storeData in storeCodesData)
+        Parallel.ForEach(storeCodesData, storeData =>
         {
             //storeDataSplit[0] = store code, storeDataSplit[1] = store location
             string[] storeDataSplit = storeData.ToString().Split(',');
             Store store = new Store { StoreCode = storeDataSplit[0], StoreLocation = storeDataSplit[1] };
 
             if (!stores.ContainsKey(store.StoreCode))
-                stores.Add(store.StoreCode, store);
-        }
+                stores.TryAdd(store.StoreCode, store);
+        });
 
         stopWatch.Stop();
         Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get all stores from stores csv)");
 
-        return stores;
+        return stores.ToDictionary(s => s.Key, s => s.Value);
     }
 
     public static List<Order> GetFileOrders(string filename)
@@ -151,10 +154,10 @@ class CSVLoader
 
         float totalCost = 0.0f;
 
-        foreach (Order order in orders)
+        Parallel.ForEach(orders, order =>
         {
             totalCost += order.Cost;
-        }
+        });
 
         orders.Clear();
 
@@ -174,10 +177,10 @@ class CSVLoader
 
         float totalCost = 0.0f;
 
-        foreach(Order order in orders)
+        Parallel.ForEach(orders, order =>
         {
             totalCost += order.Cost;
-        }
+        });
 
         orders.Clear();
 
@@ -194,30 +197,26 @@ class CSVLoader
         stopWatch.Start();
 
         List<string> allPaths = Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList();
-        List<string> paths = new List<string>();
+        ConcurrentQueue<string> paths = new ConcurrentQueue<string>();
         string comparison = "_" + week + "_" + year;
 
-        foreach (string path in allPaths)
+        Parallel.ForEach(allPaths, path =>
         {
             if (path.Contains(comparison))
             {
-                paths.Add(path);
+                paths.Enqueue(path);
             }
-        }
+        });
 
         allPaths.Clear();
 
         float totalCost = 0.0f;
-        List<Order> orders = GetStoreOrderData(paths);
+        ConcurrentQueue<Order> orders = new ConcurrentQueue<Order>(GetStoreOrderData(paths.ToList()));
 
-        paths.Clear();
-
-        foreach (Order order in orders)
+        Parallel.ForEach(orders, order =>
         {
             totalCost += order.Cost;
-        }
-
-        orders.Clear();
+        });
 
         stopWatch.Stop();
         Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Calculate cost of all orders to a single store)");
@@ -234,10 +233,10 @@ class CSVLoader
         float totalCost = 0.0f;
         List<Order> orders = GetFileOrders(filename);
 
-        foreach(Order order in orders)
+        Parallel.ForEach(orders, order =>
         {
             totalCost += order.Cost;
-        }
+        });
 
         orders.Clear();
 
@@ -252,28 +251,25 @@ class CSVLoader
         Stopwatch stopWatch = new Stopwatch();
         stopWatch.Start();
 
-        List<string> fileNames = CSVLoader.FindAllFilePathsWithCode(code);
+        List<string> fileNames = FindAllFilePathsWithCode(code);
         List<string> finalPaths = new List<string>();
         string comparison = "_" + week + "_" + year;
         float totalCost = 0.0f;
 
         foreach(string path in fileNames)
         {
-            if(path.Contains(comparison))
+            if (path.Contains(comparison))
             {
                 finalPaths.Add(path);
             }
         }
 
-        fileNames.Clear();
+        List<Order> orders = GetStoreOrderData(finalPaths.ToList());
 
-        List<Order> orders = GetStoreOrderData(finalPaths);
-        finalPaths.Clear();
-
-        foreach(Order order in orders)
+        Parallel.ForEach(orders, order =>
         {
             totalCost += order.Cost;
-        }
+        });
 
         stopWatch.Stop();
         Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Calculate cost of orders to a single store in a specified week)");
@@ -288,17 +284,15 @@ class CSVLoader
 
         float totalCost = 0.0f;
         List<string> paths = FindAllFilePathsWithCode(code);
-        List<Order> orders = GetStoreOrderData(paths);
+        ConcurrentQueue<Order> orders = new ConcurrentQueue<Order>(GetStoreOrderData(paths));
 
         paths.Clear();
 
-        foreach(Order order in orders)
+        Parallel.ForEach(orders, order =>
         {
-            if(order.SupplierType == type)
+            if (order.SupplierType == type)
                 totalCost += order.Cost;
-        }
-
-        orders.Clear();
+        });
 
         stopWatch.Stop();
         Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get cost of orders from specific supplier to a store)");
@@ -316,22 +310,20 @@ class CSVLoader
         Stopwatch stopWatch = new Stopwatch();
         stopWatch.Start();
 
-        List<Order> orders = GetStoreOrderData(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList());
+        ConcurrentQueue<Order> orders = new ConcurrentQueue<Order>(GetStoreOrderData(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList()));
         List<float> prices = new List<float>();
         float totalCost = 0.0f;
 
-        foreach (Order order in orders)
+        Parallel.ForEach(orders, order =>
         {
             if (order.SupplierName == supplier)
                 prices.Add(order.Cost);
-        }
+        });
 
-        orders.Clear();
-
-        foreach (float price in prices)
+        Parallel.ForEach(prices, price =>
         {
             totalCost += price;
-        }
+        });
 
         prices.Clear();
 
@@ -347,16 +339,14 @@ class CSVLoader
         Stopwatch stopWatch = new Stopwatch();
         stopWatch.Start();
 
-        List<Order> orders = GetStoreOrderData(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList());
+        ConcurrentQueue<Order> orders = new ConcurrentQueue<Order>(GetStoreOrderData(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList()));
         List<string> names = new List<string>();
 
-        foreach(Order order in orders)
+        Parallel.ForEach(orders, order =>
         {
             if (!names.Contains(order.SupplierName))
                 names.Add(order.SupplierName);
-        }
-
-        orders.Clear();
+        });
 
         stopWatch.Stop();
         Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get all supplier names)");
@@ -373,11 +363,11 @@ class CSVLoader
         List<Order> orders = GetStoreOrderData(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList());
         List<string> types = new List<string>();
 
-        foreach (Order order in orders)
+        Parallel.ForEach(orders, order =>
         {
             if (!types.Contains(order.SupplierType))
                 types.Add(order.SupplierType);
-        }
+        });
 
         orders.Clear();
 
@@ -392,35 +382,31 @@ class CSVLoader
         Stopwatch stopWatch = new Stopwatch();
         stopWatch.Start();
 
-        List<string> allPaths = Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList();
+        ConcurrentQueue<string> allPaths = new ConcurrentQueue<string>(Directory.GetFiles(folderPath + @"\" + storeDataFolder).ToList());
         List<string> paths = new List<string>();
         string comparison = "_" + week + "_" + year;
 
-        foreach (string path in allPaths)
+        Parallel.ForEach(allPaths, path =>
         {
-            if(path.Contains(comparison))
+            if (path.Contains(comparison))
             {
                 paths.Add(path);
             }
-        }
-
-        allPaths.Clear();
+        });
 
         float totalCost = 0.0f;
-        List<Order> orders = GetStoreOrderData(paths);
+        ConcurrentQueue<Order> orders = new ConcurrentQueue<Order>(GetStoreOrderData(paths));
 
-        paths.Clear();
-
-        foreach(Order order in orders)
+        Parallel.ForEach(orders, order =>
         {
             if (order.SupplierType == type)
                 totalCost += order.Cost;
-        }
-
-        orders.Clear();
+        });
 
         stopWatch.Stop();
         Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get cost of orders to a supplier type in a specified week)");
+
+        paths.Clear();
 
         return totalCost;
     }
@@ -437,13 +423,13 @@ class CSVLoader
 
         paths.Clear();
 
-        foreach(Order order in orders)
+        Parallel.ForEach(orders, order =>
         {
-            if(order.SupplierType == type)
+            if (order.SupplierType == type)
             {
                 totalCost += order.Cost;
             }
-        }
+        });
 
         orders.Clear();
 
