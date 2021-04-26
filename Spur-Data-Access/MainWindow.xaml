@@ -42,7 +42,7 @@
             <ComboBoxItem Content="2014" HorizontalAlignment="Left" Width="729" FontSize="48"/>
         </ComboBox>
         <TextBlock x:Name="TotalOrderSuppTypeStoreWeeklyText" HorizontalAlignment="Left" Margin="1179,792,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="731" TextAlignment="Center" Text=" - " Height="63"/>
-        <TextBlock HorizontalAlignment="Left" Margin="38,792,0,0" TextWrapping="Wrap" Text="* = Store must be selected above" VerticalAlignment="Top" FontSize="30"/>
+        <TextBlock HorizontalAlignment="Left" Margin="38,736,0,0" TextWrapping="Wrap" Text="* = Store must be selected above" VerticalAlignment="Top" FontSize="30"/>
 
     </Grid>
 </Window>

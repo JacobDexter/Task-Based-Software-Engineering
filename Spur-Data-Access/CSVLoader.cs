@@ -15,10 +15,6 @@ class CSVLoader
 
     static ConcurrentDictionary<string, Store> stores = new ConcurrentDictionary<string, Store>();
 
-    //TPL
-    //static List<Task> tasks = new List<Task>();
-    //static TaskFactory factory = new TaskFactory();
-
     public class Store
     {
         public string StoreCode { get; set; }
