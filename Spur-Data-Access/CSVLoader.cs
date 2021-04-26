@@ -150,10 +150,8 @@ class CSVLoader
 
         float totalCost = 0.0f;
 
-        Parallel.ForEach(orders, order =>
-        {
+        foreach(Order order in orders)
             totalCost += order.Cost;
-        });
 
         orders.Clear();
 
@@ -173,10 +171,8 @@ class CSVLoader
 
         float totalCost = 0.0f;
 
-        Parallel.ForEach(orders, order =>
-        {
+        foreach (Order order in orders)
             totalCost += order.Cost;
-        });
 
         orders.Clear();
 
@@ -209,10 +205,8 @@ class CSVLoader
         float totalCost = 0.0f;
         ConcurrentQueue<Order> orders = new ConcurrentQueue<Order>(GetStoreOrderData(paths.ToList()));
 
-        Parallel.ForEach(orders, order =>
-        {
+        foreach (Order order in orders)
             totalCost += order.Cost;
-        });
 
         stopWatch.Stop();
         Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Calculate cost of all orders to a single store)");
@@ -229,10 +223,8 @@ class CSVLoader
         float totalCost = 0.0f;
         List<Order> orders = GetFileOrders(filename);
 
-        Parallel.ForEach(orders, order =>
-        {
+        foreach(Order order in orders)
             totalCost += order.Cost;
-        });
 
         orders.Clear();
 
@@ -262,10 +254,8 @@ class CSVLoader
 
         List<Order> orders = GetStoreOrderData(finalPaths.ToList());
 
-        Parallel.ForEach(orders, order =>
-        {
+        foreach (Order order in orders)
             totalCost += order.Cost;
-        });
 
         stopWatch.Stop();
         Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Calculate cost of orders to a single store in a specified week)");
@@ -284,14 +274,14 @@ class CSVLoader
 
         paths.Clear();
 
-        Parallel.ForEach(orders, order =>
+        foreach(Order order in orders)
         {
             if (order.SupplierType == type)
                 totalCost += order.Cost;
-        });
+        }
 
         stopWatch.Stop();
-        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get cost of orders from specific supplier to a store)");
+        Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get cost of orders from specific supplier type to a store)");
 
         return totalCost;
     }
@@ -316,10 +306,8 @@ class CSVLoader
                 prices.Add(order.Cost);
         });
 
-        Parallel.ForEach(prices, price =>
-        {
-            totalCost += price;
-        });
+        foreach (Order order in orders)
+            totalCost += order.Cost;
 
         prices.Clear();
 
@@ -393,11 +381,11 @@ class CSVLoader
         float totalCost = 0.0f;
         ConcurrentQueue<Order> orders = new ConcurrentQueue<Order>(GetStoreOrderData(paths));
 
-        Parallel.ForEach(orders, order =>
+        foreach (Order order in orders)
         {
             if (order.SupplierType == type)
                 totalCost += order.Cost;
-        });
+        }
 
         stopWatch.Stop();
         Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get cost of orders to a supplier type in a specified week)");
@@ -419,13 +407,13 @@ class CSVLoader
 
         paths.Clear();
 
-        Parallel.ForEach(orders, order =>
+        foreach(Order order in orders)
         {
             if (order.SupplierType == type)
             {
                 totalCost += order.Cost;
             }
-        });
+        }
 
         orders.Clear();
 
