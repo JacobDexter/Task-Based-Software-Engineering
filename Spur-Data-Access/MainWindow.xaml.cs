@@ -142,7 +142,7 @@ namespace Spur_Data_Access
             Task task = Task.Factory.StartNew(() =>
             {
                 ListBoxItem temp = (ListBoxItem)sender;
-                List<CSVLoader.Order> orders = CSVLoader.GetFileOrders(temp.Content.ToString());
+                List<CSVLoader.Order> orders = CSVLoader.GetFileOrders(temp.Content.ToString()).OrderBy(x => x.SupplierType).ToList();
 
                 if (Orders.Items.Count != -1)
                     Orders.Items.Clear();

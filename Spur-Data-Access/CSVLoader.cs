@@ -133,7 +133,7 @@ class CSVLoader
         stopWatch.Stop();
         Console.WriteLine("[Execution Time]: " + stopWatch.Elapsed.TotalSeconds + " Seconds (Get all stores from stores csv)");
 
-        return stores.ToDictionary(s => s.Key, s => s.Value);
+        return stores.OrderBy(x => x.Key).ToDictionary(s => s.Key, s => s.Value);
     }
 
     public static List<Order> GetFileOrders(string filename)
