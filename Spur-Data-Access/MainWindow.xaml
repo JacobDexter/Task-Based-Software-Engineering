@@ -20,28 +20,36 @@
         <Button x:Name="CalWeeklyStoreOrderCost" Content="Calculate store week order cost" HorizontalAlignment="Left" Margin="802,621,0,0" VerticalAlignment="Top" Width="372" Height="55" FontSize="20" Click="CalWeeklyStoreOrderCost_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="802,676,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="28" Width="372" FontSize="22" TextAlignment="Center" Text="Store week order cost"/>
         <TextBlock x:Name="WeekOrderCost" HorizontalAlignment="Left" Margin="802,704,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="30" Width="372" FontSize="20" TextAlignment="Center" Text="-"/>
-        <TextBlock HorizontalAlignment="Left" Margin="1174,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="48" Width="736" TextAlignment="Center"><Run Text="All Stores"/><Run Text=" Weekly"/><Run Text=" Order Cost"/></TextBlock>
-        <TextBlock HorizontalAlignment="Left" Margin="1174,101,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="736" TextAlignment="Center" Text="Week"/>
-        <ComboBox x:Name="WeekCombo" HorizontalAlignment="Left" Margin="1179,159,0,0" VerticalAlignment="Top" Width="731" Height="82" SelectionChanged="WeekCombo_SelectionChanged" FontSize="40"/>
-        <TextBlock HorizontalAlignment="Left" Margin="1174,245,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="736" TextAlignment="Center" Text="Year"/>
-        <ComboBox x:Name="YearCombo" HorizontalAlignment="Left" Margin="1179,303,0,0" VerticalAlignment="Top" Width="731" Height="82" SelectionChanged="YearCombo_SelectionChanged" FontSize="40">
-            <ComboBoxItem Content="2013" HorizontalAlignment="Left" Width="729" FontSize="48"/>
-            <ComboBoxItem Content="2014" HorizontalAlignment="Left" Width="729" FontSize="48"/>
-        </ComboBox>
-        <TextBlock x:Name="AllStoreWeeklyText" HorizontalAlignment="Left" Margin="1174,408,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="736" TextAlignment="Center" Text=" - "/>
+        <Border Margin="1179,23,10,611" BorderBrush="Black" BorderThickness="1">
+            <Grid>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="35" Width="736" TextAlignment="Center"><Run Text="All Stores"/><Run Text=" Weekly"/><Run Text=" Order Cost"/></TextBlock>
+                <TextBlock HorizontalAlignment="Left" Margin="0,69,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="736" TextAlignment="Center" Text="Week"/>
+                <ComboBox x:Name="WeekCombo" HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top" Width="709" Height="82" SelectionChanged="WeekCombo_SelectionChanged" FontSize="40"/>
+                <TextBlock HorizontalAlignment="Left" Margin="0,213,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="736" TextAlignment="Center" Text="Year"/>
+                <ComboBox x:Name="YearCombo" HorizontalAlignment="Left" Margin="10,271,0,0" VerticalAlignment="Top" Width="709" Height="82" SelectionChanged="YearCombo_SelectionChanged" FontSize="40">
+                    <ComboBoxItem Content="2013" HorizontalAlignment="Left" Width="729" FontSize="48"/>
+                    <ComboBoxItem Content="2014" HorizontalAlignment="Left" Width="729" FontSize="48"/>
+                </ComboBox>
+                <TextBlock x:Name="AllStoreWeeklyText" HorizontalAlignment="Left" Margin="0,376,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="736" TextAlignment="Center" Text=" - "/>
+            </Grid>
+        </Border>
         <Button Content="Open Supplier Window" HorizontalAlignment="Left" Margin="1179,865,0,0" VerticalAlignment="Top" Width="731" Height="56" FontSize="20" Click="Button_Click"/>
         <ComboBox x:Name="StoreSupplierTypeTotalDropDown" HorizontalAlignment="Left" Margin="580,792,0,0" VerticalAlignment="Top" Width="412" Height="55" SelectionChanged="StoreSupplierTypeTotalDropDown_SelectionChanged" FontSize="30"/>
         <TextBlock HorizontalAlignment="Left" Margin="580,739,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22"><Run Text="Cost of orders from store"/><Run Text=" to supplier type"/><Run Text="*"/></TextBlock>
         <TextBlock x:Name="StoreSupplierTypeTotalText" HorizontalAlignment="Left" Margin="580,852,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Text=" - " TextAlignment="Center" Width="412" Height="52"/>
-        <TextBlock HorizontalAlignment="Left" Margin="1179,482,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="30" Width="731" TextAlignment="Center"><Run Text="Cost of orders "/><Run Text="to store in a specific week"/><Run Text="*"/></TextBlock>
-        <TextBlock HorizontalAlignment="Left" Margin="1179,539,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="731" TextAlignment="Center" Text="Week" Height="53"/>
-        <ComboBox x:Name="SuppTypeWeekStoreDrop" HorizontalAlignment="Left" Margin="1185,597,0,0" VerticalAlignment="Top" Width="725" Height="60" SelectionChanged="SuppTypeWeekStoreDrop_SelectionChanged" FontSize="40"/>
-        <TextBlock HorizontalAlignment="Left" Margin="1179,663,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="731" TextAlignment="Center" Text="Year" Height="60"/>
-        <ComboBox x:Name="SuppTypeYearStoreDrop" HorizontalAlignment="Left" Margin="1185,728,0,0" VerticalAlignment="Top" Width="725" Height="59" SelectionChanged="SuppTypeYearStoreDrop_SelectionChanged" FontSize="40">
-            <ComboBoxItem Content="2013" HorizontalAlignment="Left" Width="729" FontSize="48"/>
-            <ComboBoxItem Content="2014" HorizontalAlignment="Left" Width="729" FontSize="48"/>
-        </ComboBox>
-        <TextBlock x:Name="TotalOrderSuppTypeStoreWeeklyText" HorizontalAlignment="Left" Margin="1179,792,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="731" TextAlignment="Center" Text=" - " Height="63"/>
+        <Border Margin="1179,474,10,233" BorderThickness="1" BorderBrush="Black">
+            <Grid>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="35" Width="731" TextAlignment="Center"><Run Text="Cost of orders "/><Run Text="to store in a specific week"/><Run Text="*"/></TextBlock>
+                <TextBlock HorizontalAlignment="Left" Margin="0,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="731" TextAlignment="Center" Text="Week" Height="53"/>
+                <ComboBox x:Name="SuppTypeWeekStoreDrop" HorizontalAlignment="Left" Margin="10,115,0,0" VerticalAlignment="Top" Width="709" Height="60" SelectionChanged="SuppTypeWeekStoreDrop_SelectionChanged" FontSize="40"/>
+                <TextBlock HorizontalAlignment="Left" Margin="0,181,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="731" TextAlignment="Center" Text="Year" Height="60"/>
+                <ComboBox x:Name="SuppTypeYearStoreDrop" HorizontalAlignment="Left" Margin="10,246,0,0" VerticalAlignment="Top" Width="709" Height="59" SelectionChanged="SuppTypeYearStoreDrop_SelectionChanged" FontSize="40">
+                    <ComboBoxItem Content="2013" HorizontalAlignment="Left" Width="729" FontSize="48"/>
+                    <ComboBoxItem Content="2014" HorizontalAlignment="Left" Width="729" FontSize="48"/>
+                </ComboBox>
+                <TextBlock x:Name="TotalOrderSuppTypeStoreWeeklyText" HorizontalAlignment="Left" Margin="0,310,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="40" Width="731" TextAlignment="Center" Text=" - " Height="63"/>
+            </Grid>
+        </Border>
         <TextBlock HorizontalAlignment="Left" Margin="38,736,0,0" TextWrapping="Wrap" Text="* = Store must be selected above" VerticalAlignment="Top" FontSize="30"/>
 
     </Grid>

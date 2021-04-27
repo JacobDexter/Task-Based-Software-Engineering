@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,165 +23,138 @@ namespace Spur_Data_Access
     {
         public SupplierWindow()
         {
-            InitializeComponent();
-            SetupWeeks();
-            GetSupplierNames();
-            GetSupplierTypes();
+            Task task = Task.Factory.StartNew(() =>
+            {
+                InitializeComponent();
+                SetupWeeks();
+                GetSupplierNames();
+                GetSupplierTypes();
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void SetupWeeks()
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                   (
-                   () =>
-                   {
-                       for (int i = 1; i <= 52; i++)
-                       {
-                           ComboBoxItem item = new ComboBoxItem
-                           {
-                               Content = i
-                           };
+            Task task = Task.Factory.StartNew(() =>
+            {
+                for (int i = 1; i <= 52; i++)
+                {
+                    ComboBoxItem item = new ComboBoxItem
+                    {
+                        Content = i
+                    };
 
-                           WeekCombo.Items.Add(item);
-                       }
-                   }
-                   ));
+                    WeekCombo.Items.Add(item);
+                }
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void GetSupplierNames()
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                List<string> supplierNames = CSVLoader.GetSupplierNames();
+
+                foreach (string name in supplierNames)
                 {
-                    List<string> supplierNames = CSVLoader.GetSupplierNames();
-
-                    foreach (string name in supplierNames)
+                    ComboBoxItem item = new ComboBoxItem
                     {
-                        ComboBoxItem item = new ComboBoxItem
-                        {
-                            Content = name
-                        };
+                        Content = name
+                    };
 
-                        SupplierSelector.Items.Add(item);
-                    }
+                    SupplierSelector.Items.Add(item);
                 }
-                ));
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void GetSupplierTypes()
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                List<string> types = CSVLoader.GetSupplierTypes();
+
+                foreach (string type in types)
                 {
-                    List<string> types = CSVLoader.GetSupplierTypes();
-
-                    foreach (string type in types)
+                    ComboBoxItem item = new ComboBoxItem
                     {
-                        ComboBoxItem item = new ComboBoxItem
-                        {
-                            Content = type
-                        };
+                        Content = type
+                    };
 
-                        ComboBoxItem item2 = new ComboBoxItem
-                        {
-                            Content = type
-                        };
+                    ComboBoxItem item2 = new ComboBoxItem
+                    {
+                        Content = type
+                    };
 
-                        SupplierTypeSelector.Items.Add(item);
-                        SupplierTypeWeekYearSelector.Items.Add(item2);
-                    }
-
-                    types.Clear();
+                    SupplierTypeSelector.Items.Add(item);
+                    SupplierTypeWeekYearSelector.Items.Add(item2);
                 }
-                ));
+
+                types.Clear();
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void CalculateSuppTypeWeekly()
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                if (SupplierTypeWeekYearSelector.SelectedIndex != -1 && WeekCombo.SelectedIndex != -1 && YearCombo.SelectedIndex != -1)
                 {
-                    if (SupplierTypeWeekYearSelector.SelectedIndex != -1 && WeekCombo.SelectedIndex != -1 && YearCombo.SelectedIndex != -1)
-                    {
-                        ComboBoxItem item = (ComboBoxItem)SupplierTypeWeekYearSelector.SelectedItem;
-                        CostOrdersTypePerWeek.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetSupplierTypeWeeklyCost(item.Content.ToString(), WeekCombo.Text, YearCombo.Text));
-                    }
+                    ComboBoxItem item = (ComboBoxItem)SupplierTypeWeekYearSelector.SelectedItem;
+                    CostOrdersTypePerWeek.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetSupplierTypeWeeklyCost(item.Content.ToString(), WeekCombo.Text, YearCombo.Text));
                 }
-                ));
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void CalculateSuppTypeTotalCost()
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                if (SupplierTypeSelector.SelectedIndex != -1)
                 {
-                    if (SupplierTypeSelector.SelectedIndex != -1)
-                    {
-                        ComboBoxItem item = (ComboBoxItem)SupplierTypeSelector.SelectedItem;
-                        CostOfOrdersToSuppType.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetSupplierTypeTotalCost(item.Content.ToString()));
-                    }
+                    ComboBoxItem item = (ComboBoxItem)SupplierTypeSelector.SelectedItem;
+                    CostOfOrdersToSuppType.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetSupplierTypeTotalCost(item.Content.ToString()));
                 }
-                ));
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void SupplierSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
-                {
-                    ComboBoxItem item = (ComboBoxItem)SupplierSelector.SelectedItem;
-                    CostOfOrdersToSupplierText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetSupplierOrderCost(item.Content.ToString()));
-                }
-                ));
+            Task task = Task.Factory.StartNew(() =>
+            {
+                ComboBoxItem item = (ComboBoxItem)SupplierSelector.SelectedItem;
+                CostOfOrdersToSupplierText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetSupplierOrderCost(item.Content.ToString()));
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void SupplierTypeWeekYearSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
-                {
-                    CalculateSuppTypeWeekly();
-                }
-                ));
+            Task task = Task.Factory.StartNew(() =>
+            {
+                CalculateSuppTypeWeekly();
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void WeekCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
-                {
-                    CalculateSuppTypeWeekly();
-                }
-                ));
+            Task task = Task.Factory.StartNew(() =>
+            {
+                CalculateSuppTypeWeekly();
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void YearCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
-                {
-                    CalculateSuppTypeWeekly();
-                }
-                ));
+            Task task = Task.Factory.StartNew(() =>
+            {
+                CalculateSuppTypeWeekly();
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void SupplierTypeSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
-                {
-                    CalculateSuppTypeTotalCost();
-                }
-                ));
+            Task task = Task.Factory.StartNew(() =>
+            {
+                CalculateSuppTypeTotalCost();
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }

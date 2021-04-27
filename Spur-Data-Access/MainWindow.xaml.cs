@@ -31,329 +31,311 @@ namespace Spur_Data_Access
         public MainWindow()
         {
             InitializeComponent();
-            LoadStoreNames();
-            SetupWeeks();
-            GetSupplierTypes();
+                LoadStoreNames();
+                SetupWeeks();
+                GetSupplierTypes();
         }
 
         //set weeks dropdown
-        private void SetupWeeks()
+        async private void SetupWeeks()
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                   (
-                   () =>
-                   {
-                       for (int i = 1; i <= 52; i++)
-                       {
-                           ComboBoxItem item = new ComboBoxItem
-                           {
-                               Content = i
-                           };
+            Task task = Task.Factory.StartNew(() =>
+            {
+                for (int i = 1; i <= 52; i++)
+                {
+                    ComboBoxItem item = new ComboBoxItem
+                    {
+                        Content = i
+                    };
 
-                           ComboBoxItem item2 = new ComboBoxItem
-                           {
-                               Content = i
-                           };
+                    ComboBoxItem item2 = new ComboBoxItem
+                    {
+                        Content = i
+                    };
 
-                           WeekCombo.Items.Add(item);
-                           SuppTypeWeekStoreDrop.Items.Add(item2);
-                       }
-                   }
-                   ));
+                    WeekCombo.Items.Add(item);
+                    SuppTypeWeekStoreDrop.Items.Add(item2);
+                }
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
         //get all store names
-        void LoadStoreNames()
+        async void LoadStoreNames()
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                stores = CSVLoader.GetStoreData();
+
+                foreach (string index in stores.Keys)
+                {
+                    ListBoxItem item = new ListBoxItem
                     {
-                        stores = CSVLoader.GetStoreData();
+                        Content = stores[index].StoreCode + " - " + stores[index].StoreLocation
+                    };
 
-                        foreach (string index in stores.Keys)
-                        {
-                            ListBoxItem item = new ListBoxItem
-                            {
-                                Content = stores[index].StoreCode + " - " + stores[index].StoreLocation
-                            };
+                    item.Selected += new RoutedEventHandler(GetStoreData);
 
-                            item.Selected += new RoutedEventHandler(GetStoreData);
+                    Shops.Items.Add(item);
+                }
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
 
-                            Shops.Items.Add(item);
-                        }
-
-                    }
-                ));
+            await task;
         }
 
         //get all supplier types
-        private void GetSupplierTypes()
+        async private void GetSupplierTypes()
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                List<string> types = CSVLoader.GetSupplierTypes();
+
+                foreach (string type in types)
                 {
-                    List<string> types = CSVLoader.GetSupplierTypes();
-
-                    foreach (string type in types)
+                    ComboBoxItem item = new ComboBoxItem
                     {
-                        ComboBoxItem item = new ComboBoxItem
-                        {
-                            Content = type
-                        };
+                        Content = type
+                    };
 
-                        StoreSupplierTypeTotalDropDown.Items.Add(item);
-                    }
-
-                    types.Clear();
+                    StoreSupplierTypeTotalDropDown.Items.Add(item);
                 }
-                ));
+
+                types.Clear();
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
         //get all files related to store
-        void GetStoreData(object sender, RoutedEventArgs e)
+        async void GetStoreData(object sender, RoutedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-            (
-            () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                ListBoxItem temp = (ListBoxItem)sender;
+                List<string> fileNames = CSVLoader.FindAllFilePathsWithCode(temp.Content.ToString().Substring(0, 4));
+
+                ShopData.Items.Clear(); //clear any remaining items in list box
+
+                //clear total order value
+                TotalCostStore.Text = "-";
+
+                foreach (string file in fileNames)
                 {
-                    ListBoxItem temp = (ListBoxItem)sender;
-                    List<string> fileNames = CSVLoader.FindAllFilePathsWithCode(temp.Content.ToString().Substring(0, 4));
-
-                    ShopData.Items.Clear(); //clear any remaining items in list box
-
-                    //clear total order value
-                    TotalCostStore.Text = "-";
-
-                    foreach (string file in fileNames)
+                    ListBoxItem item = new ListBoxItem
                     {
-                        ListBoxItem item = new ListBoxItem
-                        {
-                            Content = System.IO.Path.GetFileName(file)
-                        };
+                        Content = System.IO.Path.GetFileName(file)
+                    };
 
-                        item.Selected += new RoutedEventHandler(LoadOrdersFromFile);
+                    item.Selected += new RoutedEventHandler(LoadOrdersFromFile);
 
-                        ShopData.Items.Add(item);
-                    }
-
-                    //calculate total of all orders and display
-                    //TotalCostStore.Text = String.Format("{0:$#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreTotalOrderCost(temp.Content.ToString().Substring(0, 4)));
+                    ShopData.Items.Add(item);
                 }
-             ));
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
         //get all orders from file
-        void LoadOrdersFromFile(object sender, RoutedEventArgs e)
+        async void LoadOrdersFromFile(object sender, RoutedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                ListBoxItem temp = (ListBoxItem)sender;
+                List<CSVLoader.Order> orders = CSVLoader.GetFileOrders(temp.Content.ToString());
+
+                if (Orders.Items.Count != -1)
+                    Orders.Items.Clear();
+
+                foreach (CSVLoader.Order order in orders)
                 {
-                    ListBoxItem temp = (ListBoxItem)sender;
-                    List<CSVLoader.Order> orders = CSVLoader.GetFileOrders(temp.Content.ToString());
-
-                    foreach (CSVLoader.Order order in orders)
+                    ListBoxItem item = new ListBoxItem
                     {
-                        ListBoxItem item = new ListBoxItem
-                        {
-                            Content = "Week " + order.Date.Week + " - " + order.Date.Year + " - " + order.SupplierName + " - " + order.SupplierType + " - " + order.Cost
-                        };
+                        Content = "Week " + order.Date.Week + " - " + order.Date.Year + " - " + order.SupplierName + " - " + order.SupplierType + " - £" + order.Cost
+                    };
 
-                        Orders.Items.Add(item);
-                    }
-
-                    orders.Clear();
+                    Orders.Items.Add(item);
                 }
-                ));
+
+                orders.Clear();
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
-        private void CalculateStoreWeeklyOrderTotal()
+        async private void CalculateStoreWeeklyOrderTotal()
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                if (SuppTypeWeekStoreDrop.SelectedIndex != -1 && SuppTypeYearStoreDrop.SelectedIndex != -1 && Shops.SelectedIndex != -1)
                 {
-                    if (SuppTypeWeekStoreDrop.SelectedIndex != -1 && SuppTypeYearStoreDrop.SelectedIndex != -1 && Shops.SelectedIndex != -1)
-                    {
-                        ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
-                        TotalOrderSuppTypeStoreWeeklyText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreWeekTotalOrderCost(item.Content.ToString().Substring(0, 4), SuppTypeWeekStoreDrop.Text, SuppTypeYearStoreDrop.Text));
-                    }
+                    ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
+                    TotalOrderSuppTypeStoreWeeklyText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreWeekTotalOrderCost(item.Content.ToString().Substring(0, 4), SuppTypeWeekStoreDrop.Text, SuppTypeYearStoreDrop.Text));
                 }
-                ));
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
-        private void CalStoreOrdersButton_Click(object sender, RoutedEventArgs e)
+        async private void CalStoreOrdersButton_Click(object sender, RoutedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                //check if a store is selected
+                if (Shops.SelectedItem != null && TotalCostStore.Text.Length <= 1)
                 {
-                    //check if a store is selected
-                    if (Shops.SelectedItem != null && TotalCostStore.Text.Length <= 1)
-                    {
-                        //get current active store
-                        ListBoxItem store = (ListBoxItem)Shops.SelectedItem;
+                    //get current active store
+                    ListBoxItem store = (ListBoxItem)Shops.SelectedItem;
 
-                        //calculate total of all orders for store and display
-                        TotalCostStore.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreTotalOrderCost(store.Content.ToString().Substring(0, 4)));
-                    }
+                    //calculate total of all orders for store and display
+                    TotalCostStore.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreTotalOrderCost(store.Content.ToString().Substring(0, 4)));
                 }
-                ));
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        async private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
-                {
-                    Shops.Items.Clear();
-                    ShopData.Items.Clear();
-                    TotalCostStore.Text = "-";
-                    TotalCostAllOrders.Text = "-";
-                    StoreSupplierTypeTotalDropDown.SelectedIndex = -1;
-                    WeekCombo.SelectedIndex = -1;
-                    YearCombo.SelectedIndex = -1;
-                    StoreSupplierTypeTotalText.Text = " - ";
-                    AllStoreWeeklyText.Text = " - ";
-                    SuppTypeWeekStoreDrop.SelectedIndex = -1;
-                    SuppTypeYearStoreDrop.SelectedIndex = -1;
-                    TotalOrderSuppTypeStoreWeeklyText.Text = " - ";
-                    LoadStoreNames();
-                }
-                ));
+            Task task = Task.Factory.StartNew(() =>
+            {
+                Shops.Items.Clear();
+                ShopData.Items.Clear();
+                TotalCostStore.Text = "-";
+                TotalCostAllOrders.Text = "-";
+                StoreSupplierTypeTotalDropDown.SelectedIndex = -1;
+                WeekCombo.SelectedIndex = -1;
+                YearCombo.SelectedIndex = -1;
+                StoreSupplierTypeTotalText.Text = " - ";
+                AllStoreWeeklyText.Text = " - ";
+                SuppTypeWeekStoreDrop.SelectedIndex = -1;
+                SuppTypeYearStoreDrop.SelectedIndex = -1;
+                TotalOrderSuppTypeStoreWeeklyText.Text = " - ";
+                Orders.Items.Clear();
+                LoadStoreNames();
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
-        private void CalOrderCostsAllStoresButton_Click(object sender, RoutedEventArgs e)
+        async private void CalOrderCostsAllStoresButton_Click(object sender, RoutedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                if (TotalCostAllOrders.Text.Length <= 1)
                 {
-                    if (TotalCostAllOrders.Text.Length <= 1)
-                    {
-                        //calculate total of all orders and display
-                        TotalCostAllOrders.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetTotalOrderCost());
-                    }
+                    //calculate total of all orders and display
+                    TotalCostAllOrders.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetTotalOrderCost());
                 }
-                ));
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
-        private void CalWeeklyStoreOrderCost_Click(object sender, RoutedEventArgs e)
+        async private void CalWeeklyStoreOrderCost_Click(object sender, RoutedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                if (ShopData.SelectedItem != null)
                 {
-                    if (ShopData.SelectedItem != null)
-                    {
-                        ListBoxItem filename = (ListBoxItem)ShopData.SelectedItem;
-                        WeekOrderCost.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreWeeklyOrderCost(filename.Content.ToString())).ToString();
-                    }
+                    ListBoxItem filename = (ListBoxItem)ShopData.SelectedItem;
+                    WeekOrderCost.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetStoreWeeklyOrderCost(filename.Content.ToString())).ToString();
                 }
-                ));
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
         private void ShopData_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Orders.Items.Clear();
             WeekOrderCost.Text = " - ";
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        async private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
-                {
-                    Window supp = new SupplierWindow();
-                    supp.Show();
-                }
-                ));
+            Task task = Task.Factory.StartNew(() =>
+            {
+                Window supp = new SupplierWindow();
+                supp.Show();
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
-        private void YearCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        async private void YearCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                if (YearCombo.SelectedIndex != -1 && WeekCombo.SelectedIndex != -1)
                 {
-                    if(YearCombo.SelectedIndex != -1 && WeekCombo.SelectedIndex != -1)
-                    {
-                        ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
-                        AllStoreWeeklyText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetWeeklyOrderCost(WeekCombo.Text, YearCombo.Text));
-                    }
+                    ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
+                    AllStoreWeeklyText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetWeeklyOrderCost(WeekCombo.Text, YearCombo.Text));
                 }
-                ));
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
-        private void WeekCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        async private void WeekCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                if (YearCombo.SelectedIndex != -1 && WeekCombo.SelectedIndex != -1)
                 {
-                    if (YearCombo.SelectedIndex != -1 && WeekCombo.SelectedIndex != -1)
-                    {
-                        ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
-                        AllStoreWeeklyText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetWeeklyOrderCost(WeekCombo.Text, YearCombo.Text));
-                    }
+                    ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
+                    AllStoreWeeklyText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetWeeklyOrderCost(WeekCombo.Text, YearCombo.Text));
                 }
-                ));
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
-        private void SuppTypeWeekStoreDrop_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        async private void SuppTypeWeekStoreDrop_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
-                {
-                    CalculateStoreWeeklyOrderTotal();
-                }
-                ));
+            Task task = Task.Factory.StartNew(() =>
+            {
+                CalculateStoreWeeklyOrderTotal();
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
-        private void SuppTypeYearStoreDrop_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        async private void SuppTypeYearStoreDrop_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
-                {
-                    CalculateStoreWeeklyOrderTotal();
-                }
-                ));
+            Task task = Task.Factory.StartNew(() =>
+            {
+                CalculateStoreWeeklyOrderTotal();
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
-        private void StoreSupplierTypeTotalDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        async private void StoreSupplierTypeTotalDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
+            Task task = Task.Factory.StartNew(() =>
+            {
+                if (Shops.SelectedIndex != -1 && StoreSupplierTypeTotalDropDown.SelectedIndex != -1)
                 {
-                    if (Shops.SelectedIndex != -1 && StoreSupplierTypeTotalDropDown.SelectedIndex != -1)
-                    {
-                        ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
-                        StoreSupplierTypeTotalText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetTotalCostOfSupplierToStore(item.Content.ToString().Substring(0, 4), StoreSupplierTypeTotalDropDown.Text));
-                    }
+                    ListBoxItem item = (ListBoxItem)Shops.SelectedItem;
+                    StoreSupplierTypeTotalText.Text = String.Format("{0:£#,##0.00;(£#,##0.00);Zero}", CSVLoader.GetTotalCostOfSupplierToStore(item.Content.ToString().Substring(0, 4), StoreSupplierTypeTotalDropDown.Text));
                 }
-                ));
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+            await task;
         }
 
-        private void Shops_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        async private void Shops_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action
-                (
-                () =>
-                {
-                    StoreSupplierTypeTotalDropDown.SelectedIndex = -1;
-                    StoreSupplierTypeTotalText.Text = " - ";
-                    SuppTypeWeekStoreDrop.SelectedIndex = -1;
-                    SuppTypeYearStoreDrop.SelectedIndex = -1;
-                    TotalOrderSuppTypeStoreWeeklyText.Text = " - ";
-                }
-                ));
+            Task task = Task.Factory.StartNew(() =>
+            {
+                StoreSupplierTypeTotalDropDown.SelectedIndex = -1;
+                StoreSupplierTypeTotalText.Text = " - ";
+                SuppTypeWeekStoreDrop.SelectedIndex = -1;
+                SuppTypeYearStoreDrop.SelectedIndex = -1;
+                TotalOrderSuppTypeStoreWeeklyText.Text = " - ";
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+            
+            await task;
         }
     }
 }
